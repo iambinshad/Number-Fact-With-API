@@ -40,38 +40,64 @@ class ScreenHome extends StatefulWidget {
 
 final _inputNumberController = TextEditingController();
 
-var result = 'Enter number for get result';
+var _resultText = 'Type number and get result';
 
 class _ScreenHomeState extends State<ScreenHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                keyboardType: TextInputType.number,
-                controller: _inputNumberController,
-                decoration: InputDecoration(
-                    hintText: 'Enter number', border: OutlineInputBorder()),
-              ),
-            ),
-            ElevatedButton(
-                onPressed: () {
-                  final _number = _inputNumberController.text;
-                  getNumberFact(number: _number);
-                  setState(() {
-                    result = _number;
-                  });
-                },
-                child: const Text('Get fact')),
-            Text(result)
-          ],
-        ),
+      // backgroundColor: Colors.red,
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        centerTitle: true,
+        title: const Text('Number Fact'),
       ),
+      body: SafeArea(
+          child: Stack(
+        children: [
+          Positioned(
+              child: Image.asset(
+            'asset/numberbg.avif',
+            height: double.infinity,
+            width: double.infinity,
+          )),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  keyboardType: TextInputType.number,
+                  controller: _inputNumberController,
+                  decoration: InputDecoration(
+                      hintText: 'Enter number',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(color: Colors.red))),
+                ),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                  // style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.red)),
+                  onPressed: () async {
+                    final _number = _inputNumberController.text;
+                    final _result = await getNumberFact(number: _number);
+                    getNumberFact(number: _number);
+                    setState(() {
+                      _resultText = _result.text ?? 'No trivia text found ';
+                    });
+                  },
+                  child: const Text('Get fact')),
+              Center(child: (Text("""$_resultText""")))
+            ],
+          ),
+        ],
+      )),
     );
   }
 }
